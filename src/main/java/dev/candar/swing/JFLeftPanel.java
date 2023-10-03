@@ -55,26 +55,27 @@ class JFLeftPanel extends JPanel {
 
 
         Object[][] entries = {
-            {"Home",      Resources.homeIcon,     },
-            {"Documents", Resources.fileIcon      },
-            {"Downloads", Resources.saveIcon      },
-            {"Computer",  Resources.computerIcon  },
+            {"Home",      Resources.homeIcon,     Paths.get(System.getProperty("user.home"))                      },
+            {"Documents", Resources.fileIcon,     Paths.get(System.getProperty("user.home"), "Documents") },
+            {"Downloads", Resources.saveIcon,     Paths.get(System.getProperty("user.home"), "Downloads") },
+            {"Computer",  Resources.computerIcon, Paths.get("/")},
         };
 
         for (int i = 0; i < entries.length; i++) {
             gc.weightx = 1;
             gc.gridy = i * 2 + 1;
 
+            final int iConst = i;
+
             JButton button = new JButton((String) entries[i][0], (Icon) entries[i][1]);
             button.setHorizontalAlignment(SwingConstants.LEFT);
             button.setIconTextGap(10);
             button.setPreferredSize(new Dimension(0, 30));
             button.addActionListener((action) -> {
-                fileExplorer.setPath(Paths.get("/home/hakan"));
+                fileExplorer.setPath((Path) entries[iConst][2]);
             });
 
             leftPanel.add(button, gc);
-
 
             gc.gridy += 1;
 

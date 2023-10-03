@@ -73,6 +73,10 @@ class JFFilePathPanel extends JPanel {
             traversedPath = traversedPath.getParent();
         }
 
+        if (paths.length == 0) {
+            add(new JLabel(FileSystems.getDefault().getSeparator()));
+        }
+
 
 		for (Path p : paths) {
 			add(new JLabel(FileSystems.getDefault().getSeparator()));
