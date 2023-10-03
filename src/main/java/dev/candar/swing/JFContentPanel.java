@@ -63,11 +63,41 @@ class JFFilePathPanel extends JPanel {
 	void setPath(Path path) {
 		removeAll();
 
-		path = path.toAbsolutePath();
+        Path[] paths = new Path[path.getNameCount()];
 
-		for (Path p : path) {
+        Path traversedPath = path;
+        
+        for(int i = path.getNameCount() - 1; i >= 0; i--) {
+            paths[i] = traversedPath;
+
+            traversedPath = traversedPath.getParent();
+        }
+
+
+		for (Path p : paths) {
 			add(new JLabel(FileSystems.getDefault().getSeparator()));
-			add(new JLabel(p.toString()));
+            
+            JLabel pathLabel = new JLabel(p.getFileName().toString());
+            pathLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    pathLabel.setOpaque(true);
+                    pathLabel.setBackground(Resources.secondaryAccentColor);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    pathLabel.setOpaque(false);
+                    pathLabel.setBackground(null);
+                }
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    fileExplorer.setPath(p.toAbsolutePath());
+                }
+            });
+
+			add(pathLabel);
 		}
 	}
 
