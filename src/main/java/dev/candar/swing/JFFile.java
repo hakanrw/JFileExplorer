@@ -11,6 +11,7 @@ import java.io.File;
 
 class JFFile extends JPanel {
 
+    boolean hover = false;
     boolean selected = false;
 
     JFFile(File file) {
@@ -39,11 +40,13 @@ class JFFile extends JPanel {
     }
 
     void onHover() {
+        hover = true;
         setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Resources.accentColor), 
             BorderFactory.createEmptyBorder(9, 2, 9, 2)));
     }
 
     void onHoverLost() {
+        hover = false;
         if (selected) return;
 
         setBorder(BorderFactory.createEmptyBorder(10, 2, 10, 2));
@@ -61,8 +64,10 @@ class JFFile extends JPanel {
     void onSelectLost() {
         setBorder(BorderFactory.createEmptyBorder(10, 2, 10, 2));
         setBackground(null);
-
         selected = false;
+
+        if (hover) onHover();
+        else onHoverLost();
     }
   
 }

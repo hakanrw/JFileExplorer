@@ -22,7 +22,6 @@ public class JFileExplorer extends JFrame {
         contentPanel.folderViewPanel.fileExplorer = this;
         contentPanel.filePathPanel.fileExplorer = this;
 
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         Container contentPane = getContentPane();
         // contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));

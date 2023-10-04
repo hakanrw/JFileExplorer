@@ -1,6 +1,5 @@
 package dev.candar.swing;
 
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -9,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 import javax.swing.*;
+import java.awt.*;
 
 class JFContentPanel extends JPanel {
 	JFileExplorer fileExplorer;
@@ -112,13 +112,16 @@ class JFFolderViewPanel extends JPanel {
 
 	JFFile[] fileViews;
 
+	JFActionMenu actionMenu = new JFActionMenu();
+
 	JFFolderViewPanel() {
 		setLayout(new FlowLayout(FlowLayout.LEFT));
+		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.TRUE);
 
 		addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-                loseAllFileSelects();
+			public void mousePressed(MouseEvent e) {
+                if (!e.isControlDown()) loseAllFileSelects();
 			}
 		});
 	}
@@ -154,24 +157,37 @@ class JFFolderViewPanel extends JPanel {
 				public void mouseExited(MouseEvent e) {
 					fileView.onHoverLost();
 				}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+					
+					if (e.isPopupTrigger()) {
+						actionMenu.show(e.getComponent(), e.getX(), e.getY());
+					}
 
-				public void mouseClicked(MouseEvent e) {
                     if (fileView.selected) {
                         // double clicked, maybe add time logic so that double click is quick
-
-                        if (file.isDirectory())
+						if (e.isPopupTrigger())
+							{}
+						else if (e.isControlDown())
+							fileView.onSelectLost();
+                        else if (file.isDirectory())
                             fileExplorer.setPath(file.toPath().toAbsolutePath());
-                        else 
+                        else {
                             try {
                                 Desktop.getDesktop().open(file);
                             } catch (Exception exception) {
+								exception.printStackTrace();
                                 // TODO: handle exception
                             }
+						}
 
                     } else {
-                        loseAllFileSelects();
+						// file once clicked 
+						if (!e.isControlDown()) loseAllFileSelects();
                         fileView.onSelect();
                     }
+
 				}
 
 			});
@@ -179,6 +195,10 @@ class JFFolderViewPanel extends JPanel {
 			fileViews[i] = fileView;
 			add(fileView);
 		}
+
+	}
+
+	void showActionMenu(JFFile onFile) {
 
 	}
 
