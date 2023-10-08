@@ -160,7 +160,7 @@ class JFFolderViewPanel extends JPanel {
 
         boolean created = new File(fileExplorer.currentPath.toFile(), folderName).mkdir();
 
-        if (!created) JOptionPane.showMessageDialog(this, "Folder could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!created) JOptionPane.showMessageDialog(null, "Folder could not be created", "Error", JOptionPane.ERROR_MESSAGE);
 
         fileExplorer.setPath(fileExplorer.currentPath); // reload page
     }
@@ -172,7 +172,7 @@ class JFFolderViewPanel extends JPanel {
         try {
             new File(fileExplorer.currentPath.toFile(), fileName).createNewFile();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "File could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "File could not be created", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         fileExplorer.setPath(fileExplorer.currentPath); // reload page
