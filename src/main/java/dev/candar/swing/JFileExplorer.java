@@ -14,6 +14,8 @@ public class JFileExplorer extends JFrame {
     JFLeftPanel leftPanel = new JFLeftPanel();
     JFContentPanel contentPanel = new JFContentPanel();
 
+    Path currentPath;
+
     public JFileExplorer() {
         super("JFileExplorer");
 
@@ -37,6 +39,8 @@ public class JFileExplorer extends JFrame {
     }
 
     public void setPath(Path path) {
+        currentPath = path;
+        
         leftPanel.setPath(path);
         contentPanel.setPath(path);
 

@@ -1,6 +1,9 @@
 package dev.candar.swing;
 
 import javax.swing.*;
+
+import dev.candar.swing.Utils.OS;
+
 import java.awt.*;
 
 import java.awt.event.MouseAdapter;
@@ -150,5 +153,39 @@ class JFFolderViewPanel extends JPanel {
 			}
 		}
 	}
+
+    void launchTerminal() {
+        OS os = Utils.getOS();
+
+        if (os == OS.WINDOWS) {
+            try {
+                Runtime.getRuntime().exec("cmd /c start cmd.exe", null, fileExplorer.currentPath.toFile());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (os == OS.LINUX || os == OS.SOLARIS) {
+            String emulator = null;
+
+            if (new File("/usr/bin/xterm").exists()) emulator = "/usr/bin/xterm";
+            if (new File("/usr/bin/x-terminal-emulator").exists()) emulator = "/usr/bin/x-terminal-emulator";
+            if (new File("/usr/bin/gnome-terminal").exists()) emulator = "/usr/bin/gnome-terminal";
+
+            try {
+                if (emulator == null) throw new Error("No terminal emulator found");
+                Runtime.getRuntime().exec(emulator, null, fileExplorer.currentPath.toFile());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (os == OS.MAC) {
+            try {
+                Runtime.getRuntime().exec("/usr/bin/open -a Terminal .", null, fileExplorer.currentPath.toFile());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+    }
 
 }

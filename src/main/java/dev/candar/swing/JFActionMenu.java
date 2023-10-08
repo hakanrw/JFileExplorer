@@ -15,7 +15,7 @@ import javax.swing.event.PopupMenuListener;
 class JFActionMenu  extends JPopupMenu {
     boolean visible = false;
 
-    static enum ActionType {
+    enum ActionType {
         FOLDER,
         SINGLE_FILE,
         MULTI_FILES
@@ -59,6 +59,18 @@ class JFActionMenu  extends JPopupMenu {
             addSeparator();
             add(deleteItem);
         }
+
+        newFolderItem.addActionListener((action) -> {
+
+        });
+
+        newFileItem.addActionListener((action) -> {
+
+        });
+
+        openInTerminalItem.addActionListener((action) -> {
+            folderViewPanel.launchTerminal();
+        });
 
         openItem.addActionListener((action) -> {
             folderViewPanel.openSelectedFile();
