@@ -1,6 +1,7 @@
 package dev.candar.swing;
 
 import java.awt.*;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -91,6 +92,10 @@ class JFLeftPanel extends JPanel {
 
         leftPanel.add(new Container(), gc);
 
+        long totalSpace = new File("/").getTotalSpace() / 1024 / 1024 / 1024;
+        long freeSpace = new File("/").getFreeSpace() / 1024 / 1024 / 1024;
+        long usedSpace = totalSpace - freeSpace;
+
         gc.weighty = 0;
         gc.gridy += 1;
 
@@ -116,9 +121,9 @@ class JFLeftPanel extends JPanel {
         spacePanel.add(margin);
 
         JProgressBar diskProgress = new JProgressBar();
-        diskProgress.setValue((int) ( (45. / 95.) * 100 ) );
+        diskProgress.setValue((int) ( (usedSpace * 1.0 / totalSpace) * 100 ) );
         diskProgress.setMaximum(100);
-        diskProgress.setString("45GB / 95GB");
+        diskProgress.setString(String.format("%dGB / %dGB", usedSpace, totalSpace));
         diskProgress.setStringPainted(true);
         spacePanel.add(diskProgress);
 
