@@ -154,6 +154,25 @@ class JFFolderViewPanel extends JPanel {
 		}
 	}
 
+    void showCreateFolderPrompt() {
+        String folderName = JOptionPane.showInputDialog(this, "Folder name:");
+        if (folderName == null || folderName == "") return;
+
+        boolean created = new File(fileExplorer.currentPath.toFile(), folderName).mkdir();
+
+        if (!created) JOptionPane.showMessageDialog(this, "Folder could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+
+        fileExplorer.setPath(fileExplorer.currentPath); // reload page
+    }
+
+    void deleteSelectedFiles() {
+        JFFile[] files = getSelectedFiles();
+
+        for (JFFile file : files) file.file.delete();
+
+        fileExplorer.setPath(fileExplorer.currentPath); // reload page
+    }
+
     void launchTerminal() {
         OS os = Utils.getOS();
 

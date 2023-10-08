@@ -61,7 +61,7 @@ class JFActionMenu  extends JPopupMenu {
         }
 
         newFolderItem.addActionListener((action) -> {
-
+            folderViewPanel.showCreateFolderPrompt();
         });
 
         newFileItem.addActionListener((action) -> {
@@ -74,6 +74,10 @@ class JFActionMenu  extends JPopupMenu {
 
         openItem.addActionListener((action) -> {
             folderViewPanel.openSelectedFile();
+        });
+
+        deleteItem.addActionListener((action) -> {
+            folderViewPanel.deleteSelectedFiles();
         });
         
     }
