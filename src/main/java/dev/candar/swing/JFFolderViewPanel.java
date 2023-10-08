@@ -165,6 +165,19 @@ class JFFolderViewPanel extends JPanel {
         fileExplorer.setPath(fileExplorer.currentPath); // reload page
     }
 
+    void showCreateFilePrompt() {
+        String fileName = JOptionPane.showInputDialog(this, "File name:");
+        if (fileName == null || fileName == "") return;
+
+        try {
+            new File(fileExplorer.currentPath.toFile(), fileName).createNewFile();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "File could not be created", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        fileExplorer.setPath(fileExplorer.currentPath); // reload page
+    }
+
     void deleteSelectedFiles() {
         JFFile[] files = getSelectedFiles();
 

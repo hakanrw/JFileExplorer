@@ -65,7 +65,7 @@ class JFActionMenu  extends JPopupMenu {
         });
 
         newFileItem.addActionListener((action) -> {
-
+            folderViewPanel.showCreateFilePrompt();
         });
 
         openInTerminalItem.addActionListener((action) -> {
