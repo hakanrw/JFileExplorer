@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.*;
@@ -103,103 +104,6 @@ class JFFilePathPanel extends JPanel {
 
 			add(pathLabel);
 		}
-	}
-
-}
-
-class JFFolderViewPanel extends JPanel {
-	JFileExplorer fileExplorer;
-
-	JFFile[] fileViews;
-
-	JFActionMenu actionMenu = new JFActionMenu();
-
-	JFFolderViewPanel() {
-		setLayout(new FlowLayout(FlowLayout.LEFT));
-		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.TRUE);
-
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-                if (!e.isControlDown()) loseAllFileSelects();
-			}
-		});
-	}
-
-	void loseAllFileSelects() {
-		for (JFFile fileView : fileViews) {
-			fileView.onSelectLost();
-		}
-	}
-
-	void setPath(Path path) {
-        removeAll();
-
-		File folder = path.toFile();
-		File[] files = Arrays.stream(folder.listFiles()).filter(file -> !file.isHidden()).toArray(File[]::new); 
-
-        Arrays.sort(files); 
-
-		fileViews = new JFFile[files.length];
-
-		for (int i = 0; i < files.length; i++) {
-			File file = files[i];
-
-			JFFile fileView = new JFFile(file);
-
-			fileView.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					fileView.onHover();
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
-					fileView.onHoverLost();
-				}
-				
-				@Override
-				public void mousePressed(MouseEvent e) {
-					
-					if (e.isPopupTrigger()) {
-						actionMenu.show(e.getComponent(), e.getX(), e.getY());
-					}
-
-                    if (fileView.selected) {
-                        // double clicked, maybe add time logic so that double click is quick
-						if (e.isPopupTrigger())
-							{}
-						else if (e.isControlDown())
-							fileView.onSelectLost();
-                        else if (file.isDirectory())
-                            fileExplorer.setPath(file.toPath().toAbsolutePath());
-                        else {
-                            try {
-                                Desktop.getDesktop().open(file);
-                            } catch (Exception exception) {
-								exception.printStackTrace();
-                                // TODO: handle exception
-                            }
-						}
-
-                    } else {
-						// file once clicked 
-						if (!e.isControlDown()) loseAllFileSelects();
-                        fileView.onSelect();
-                    }
-
-				}
-
-			});
-
-			fileViews[i] = fileView;
-			add(fileView);
-		}
-
-	}
-
-	void showActionMenu(JFFile onFile) {
-
 	}
 
 }

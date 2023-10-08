@@ -11,10 +11,14 @@ import java.io.File;
 
 class JFFile extends JPanel {
 
+    File file;
+
     boolean hover = false;
     boolean selected = false;
 
     JFFile(File file) {
+        this.file = file;
+        
         setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(80, 110));
         setBorder(BorderFactory.createEmptyBorder(10, 2, 10, 2));

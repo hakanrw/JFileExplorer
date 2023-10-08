@@ -1,0 +1,154 @@
+package dev.candar.swing;
+
+import javax.swing.*;
+import java.awt.*;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+class JFFolderViewPanel extends JPanel {
+	JFileExplorer fileExplorer;
+
+	JFFile[] fileViews;
+
+	JFActionMenu folderActionMenu = new JFActionMenu(JFActionMenu.ActionType.FOLDER);
+	JFActionMenu singleFileActionMenu = new JFActionMenu(JFActionMenu.ActionType.SINGLE_FILE);
+	JFActionMenu multiFilesActionMenu = new JFActionMenu(JFActionMenu.ActionType.MULTI_FILES);
+
+	JFFolderViewPanel() {
+		folderActionMenu.folderViewPanel = this;
+		singleFileActionMenu.folderViewPanel = this;
+		multiFilesActionMenu.folderViewPanel = this;
+
+		setLayout(new FlowLayout(FlowLayout.LEFT));
+		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.TRUE);
+
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (!e.isControlDown())
+					loseAllFileSelects();
+
+				if (e.isPopupTrigger()) {
+					loseAllFileSelects();
+					showActionMenu(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+		});
+	}
+
+	void loseAllFileSelects() {
+		for (JFFile fileView : fileViews) {
+			fileView.onSelectLost();
+		}
+	}
+
+	void setPath(Path path) {
+		removeAll();
+
+		File folder = path.toFile();
+		File[] files = Arrays.stream(folder.listFiles()).filter(file -> !file.isHidden()).toArray(File[]::new);
+
+		Arrays.sort(files);
+
+		fileViews = new JFFile[files.length];
+
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+
+			JFFile fileView = new JFFile(file);
+
+			fileView.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					fileView.onHover();
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					fileView.onHoverLost();
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+
+					if (fileView.selected) {
+						// double clicked, maybe add time logic so that double click is quick
+						if (e.isPopupTrigger()) {
+						} else if (e.isControlDown())
+							fileView.onSelectLost();
+						else {
+							loseAllFileSelects();
+							fileView.onSelect();
+
+							openSelectedFile();
+						}
+
+					} else {
+						// file once clicked
+						if (!e.isControlDown())
+							loseAllFileSelects();
+						fileView.onSelect();
+					}
+
+					if (e.isPopupTrigger()) {
+						showActionMenu(e.getComponent(), e.getX(), e.getY());
+					}
+
+				}
+
+			});
+
+			fileViews[i] = fileView;
+			add(fileView);
+		}
+
+	}
+
+	JFFile[] getSelectedFiles() {
+		ArrayList<JFFile> selectedFiles = new ArrayList<JFFile>();
+
+		for (JFFile file : fileViews)
+			if (file.selected)
+				selectedFiles.add(file);
+
+		return selectedFiles.toArray(JFFile[]::new);
+	}
+
+	void showActionMenu(Component component, int x, int y) {
+		JFFile[] selectedFiles = getSelectedFiles();
+
+		if (selectedFiles.length == 0)
+			folderActionMenu.show(component, x, y);
+		if (selectedFiles.length == 1)
+			singleFileActionMenu.show(component, x, y);
+		if (selectedFiles.length >= 2)
+			multiFilesActionMenu.show(component, x, y);
+
+	}
+
+	void openSelectedFile() {
+		JFFile[] selectedFiles = getSelectedFiles();
+
+		if (selectedFiles.length != 1)
+			throw new Error("openSelectedFile has more than one file or no files!");
+
+        File file = selectedFiles[0].file;
+
+		if (file.isDirectory()) {
+            fileExplorer.setPath(file.toPath());
+		} else {
+			try {
+				Desktop.getDesktop().open(file);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+	}
+
+}
