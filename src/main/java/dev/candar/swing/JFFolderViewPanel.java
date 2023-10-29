@@ -9,7 +9,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,6 +20,7 @@ class JFFolderViewPanel extends JPanel {
 	JFileExplorer fileExplorer;
 
 	JFFile[] fileViews;
+	File[] filesToBeCopied;
 
 	JFActionMenu folderActionMenu = new JFActionMenu(JFActionMenu.ActionType.FOLDER);
 	JFActionMenu singleFileActionMenu = new JFActionMenu(JFActionMenu.ActionType.SINGLE_FILE);
@@ -185,6 +189,27 @@ class JFFolderViewPanel extends JPanel {
 
         fileExplorer.setPath(fileExplorer.currentPath); // reload page
     }
+
+	void copySelectedFiles() {
+		JFFile[] files = getSelectedFiles();
+
+		filesToBeCopied = Arrays.stream(files).map(jfFile -> jfFile.file).toArray(File[]::new);
+		System.out.println(filesToBeCopied.length);
+	}
+
+	void pasteFiles() {
+		if (filesToBeCopied == null) return;
+
+		try {
+			for (File fileToCopy : filesToBeCopied) {
+				Files.copy(fileToCopy.toPath(), fileExplorer.currentPath.resolve(fileToCopy.getName()));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		fileExplorer.setPath(fileExplorer.currentPath); // reload page
+	}
 
     void launchTerminal() {
         OS os = Utils.getOS();
