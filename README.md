@@ -6,11 +6,10 @@ File Explorer written with Java and Swing.
 
 
 ## Running the program
-Run the project with `sbt run`
+Run the project with `./gradlew run` (UNIX), or `gradlew.bat run` (NT)
 
-You need to have SBT installed.
 
 ## TODO
 - _~~Implement directory traversal~~_ (done)
-- Implement file creation
-- Implement rename
+- _~~Implement file creation~~_ (done)
+- _~~Implement rename~~_ (done)
