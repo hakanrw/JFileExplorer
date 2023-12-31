@@ -2,11 +2,8 @@ package dev.candar.swing;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.*;
 import java.awt.*;

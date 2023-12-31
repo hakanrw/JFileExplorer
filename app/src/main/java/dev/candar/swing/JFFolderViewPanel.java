@@ -1,18 +1,14 @@
 package dev.candar.swing;
 
-import javax.swing.*;
-
 import dev.candar.swing.Utils.OS;
-
+import javax.swing.*;
 import java.awt.*;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 

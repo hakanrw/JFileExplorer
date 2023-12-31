@@ -1,12 +1,7 @@
 package dev.candar.swing;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-
-import org.w3c.dom.events.MouseEvent;
-
 import java.awt.*;
-import java.awt.event.MouseListener;
 import java.io.File;
 
 class JFFile extends JPanel {

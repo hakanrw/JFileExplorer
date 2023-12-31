@@ -2,7 +2,6 @@ package dev.candar.swing;
 
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.Icon;
 import javax.swing.UIManager;
 

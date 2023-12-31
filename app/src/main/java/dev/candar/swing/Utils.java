@@ -2,7 +2,6 @@ package dev.candar.swing;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
