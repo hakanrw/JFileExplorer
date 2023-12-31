@@ -11,10 +11,11 @@ class JFFile extends JPanel {
     boolean hover = false;
     boolean selected = false;
 
-    JLabel icon;
-    JLabel label;
-
     JFFile(File file) {
+        this(file, false);
+    }
+
+    JFFile(File file, boolean dim) {
         this.file = file;
         
         setLayout(new GridBagLayout());
@@ -28,9 +29,10 @@ class JFFile extends JPanel {
         gc.weightx = 1;
         gc.fill = GridBagConstraints.HORIZONTAL;
 
-        icon = new JLabel( 
-            new ImageIcon(Utils.iconToImage(isDirectory ? Resources.dirIcon : Resources.fileIcon)
-                .getScaledInstance(50, 50, Image.SCALE_FAST))
+        JLabel icon = new JLabel( 
+            (dim ?
+                isDirectory ? Resources.folderCutImageIcon : Resources.fileCutImageIcon :
+                isDirectory ? Resources.folderImageIcon : Resources.fileImageIcon)
         );
 
         add(icon, gc);
@@ -40,8 +42,12 @@ class JFFile extends JPanel {
         gc.weighty = 1;
         gc.fill = GridBagConstraints.BOTH;
 
-        label = new JLabel(file.getName(), SwingConstants.CENTER);
-        
+        JLabel label = new JLabel(file.getName(), SwingConstants.CENTER);
+
+        if (dim) {
+            label.setForeground(new Color(0, 0, 0, 120));
+        }
+
         add(label, gc);
     }
 

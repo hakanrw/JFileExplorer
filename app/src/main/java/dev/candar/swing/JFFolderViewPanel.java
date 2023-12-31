@@ -64,15 +64,15 @@ class JFFolderViewPanel extends JPanel {
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 
-			JFFile fileView = new JFFile(file);
+            boolean dim = false;
 
             if (filesToBeCut != null && Arrays.stream(filesToBeCut).anyMatch((fileToCut) -> fileToCut.compareTo(file) == 0)) {
                 // this file is to be cut, set transparency
-                fileView.icon.setForeground(new Color(0, 0, 0, 125));
-                fileView.label.setForeground(new Color(0, 0, 0, 125));
-
-                System.out.println("Foreground");
+                dim = true;
             }
+
+			JFFile fileView = new JFFile(file, dim);
+
 
 			fileView.addMouseListener(new MouseAdapter() {
 				@Override
@@ -238,6 +238,7 @@ class JFFolderViewPanel extends JPanel {
 
         filesToBeCut = null; // clear cut list buy retain copy list
 
+        System.out.println("Pasted " + files.length + " files.");
 		fileExplorer.setPath(fileExplorer.currentPath); // reload page
 	}
 

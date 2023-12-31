@@ -2,7 +2,9 @@ package dev.candar.swing;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
 class Resources {
@@ -19,5 +21,11 @@ class Resources {
     public static Icon saveIcon = UIManager.getIcon("FileView.floppyDriveIcon");
     public static Icon computerIcon = UIManager.getIcon("FileView.computerIcon");
     public static Icon diskIcon = UIManager.getIcon("FileView.hardDriveIcon");
+
+    public static ImageIcon fileImageIcon = new ImageIcon(Resources.class.getClassLoader().getResource("Document.png"));
+    public static ImageIcon folderImageIcon = new ImageIcon(Resources.class.getClassLoader().getResource("Folder.png"));
+
+    public static ImageIcon fileCutImageIcon = new ImageIcon(Resources.class.getClassLoader().getResource("DocumentCut.png"));
+    public static ImageIcon folderCutImageIcon = new ImageIcon(Resources.class.getClassLoader().getResource("FolderCut.png"));
 
 }
