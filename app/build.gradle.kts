@@ -37,7 +37,21 @@ application {
     mainClass.set("dev.candar.swing.JFileExplorer")
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs("src/resources")
+        }
+    }
+}
+
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "dev.candar.swing.JFileExplorer"
+    }
 }

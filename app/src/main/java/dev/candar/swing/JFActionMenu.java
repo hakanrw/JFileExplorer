@@ -83,7 +83,10 @@ class JFActionMenu  extends JPopupMenu {
         deleteItem.addActionListener((action) -> {
             folderViewPanel.deleteSelectedFiles();
         });
-        
+
+        cutItem.addActionListener((action) -> {
+            folderViewPanel.cutSelectedFiles();
+        });
     }
 }
 

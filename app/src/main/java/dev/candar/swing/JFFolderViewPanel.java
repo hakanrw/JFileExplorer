@@ -17,6 +17,7 @@ class JFFolderViewPanel extends JPanel {
 
 	JFFile[] fileViews;
 	File[] filesToBeCopied;
+	File[] filesToBeCut;
 
 	JFActionMenu folderActionMenu = new JFActionMenu(JFActionMenu.ActionType.FOLDER);
 	JFActionMenu singleFileActionMenu = new JFActionMenu(JFActionMenu.ActionType.SINGLE_FILE);
@@ -64,6 +65,14 @@ class JFFolderViewPanel extends JPanel {
 			File file = files[i];
 
 			JFFile fileView = new JFFile(file);
+
+            if (filesToBeCut != null && Arrays.stream(filesToBeCut).anyMatch((fileToCut) -> fileToCut.compareTo(file) == 0)) {
+                // this file is to be cut, set transparency
+                fileView.icon.setForeground(new Color(0, 0, 0, 125));
+                fileView.label.setForeground(new Color(0, 0, 0, 125));
+
+                System.out.println("Foreground");
+            }
 
 			fileView.addMouseListener(new MouseAdapter() {
 				@Override
@@ -187,22 +196,47 @@ class JFFolderViewPanel extends JPanel {
     }
 
 	void copySelectedFiles() {
+        filesToBeCut = null;
 		JFFile[] files = getSelectedFiles();
 
 		filesToBeCopied = Arrays.stream(files).map(jfFile -> jfFile.file).toArray(File[]::new);
 		System.out.println(filesToBeCopied.length);
+
+        fileExplorer.setPath(fileExplorer.currentPath); // reload page
+	}
+
+    void cutSelectedFiles() {
+        filesToBeCopied = null;
+		JFFile[] files = getSelectedFiles();
+
+		filesToBeCut = Arrays.stream(files).map(jfFile -> jfFile.file).toArray(File[]::new);
+		System.out.println(filesToBeCut.length);
+
+        fileExplorer.setPath(fileExplorer.currentPath); // reload page
 	}
 
 	void pasteFiles() {
-		if (filesToBeCopied == null) return;
+		if (filesToBeCopied == null && filesToBeCut == null) return;
+
+        boolean isCopy = filesToBeCopied != null;
+
+        File[] files;
+
+        if (isCopy) files = filesToBeCopied;
+        else files = filesToBeCut;
 
 		try {
-			for (File fileToCopy : filesToBeCopied) {
-				Files.copy(fileToCopy.toPath(), fileExplorer.currentPath.resolve(fileToCopy.getName()));
+			for (File file : files) {
+                if (isCopy)
+				    Files.copy(file.toPath(), fileExplorer.currentPath.resolve(file.getName()));
+                else
+                    Files.move(file.toPath(), fileExplorer.currentPath.resolve(file.getName()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+        filesToBeCut = null; // clear cut list buy retain copy list
 
 		fileExplorer.setPath(fileExplorer.currentPath); // reload page
 	}

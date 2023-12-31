@@ -11,6 +11,9 @@ class JFFile extends JPanel {
     boolean hover = false;
     boolean selected = false;
 
+    JLabel icon;
+    JLabel label;
+
     JFFile(File file) {
         this.file = file;
         
@@ -25,17 +28,21 @@ class JFFile extends JPanel {
         gc.weightx = 1;
         gc.fill = GridBagConstraints.HORIZONTAL;
 
-        add(new JLabel( 
+        icon = new JLabel( 
             new ImageIcon(Utils.iconToImage(isDirectory ? Resources.dirIcon : Resources.fileIcon)
                 .getScaledInstance(50, 50, Image.SCALE_FAST))
-        ), gc);
+        );
+
+        add(icon, gc);
 
         gc.gridy = 2;
         gc.weightx = 1;
         gc.weighty = 1;
         gc.fill = GridBagConstraints.BOTH;
 
-        add(new JLabel(file.getName(), SwingConstants.CENTER), gc);
+        label = new JLabel(file.getName(), SwingConstants.CENTER);
+        
+        add(label, gc);
     }
 
     void onHover() {
