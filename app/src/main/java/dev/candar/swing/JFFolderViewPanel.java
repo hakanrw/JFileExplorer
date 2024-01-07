@@ -22,6 +22,9 @@ class JFFolderViewPanel extends JPanel {
 	JFActionMenu folderActionMenu = new JFActionMenu(JFActionMenu.ActionType.FOLDER);
 	JFActionMenu singleFileActionMenu = new JFActionMenu(JFActionMenu.ActionType.SINGLE_FILE);
 	JFActionMenu multiFilesActionMenu = new JFActionMenu(JFActionMenu.ActionType.MULTI_FILES);
+	
+	OS os = Utils.getOS();
+	Desktop desktop = Desktop.getDesktop();
 
 	JFFolderViewPanel() {
 		folderActionMenu.folderViewPanel = this;
@@ -37,6 +40,15 @@ class JFFolderViewPanel extends JPanel {
 				if (!e.isControlDown())
 					loseAllFileSelects();
 
+				maybeShowPopup(e);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				maybeShowPopup(e);
+			}
+
+			public void maybeShowPopup(MouseEvent e) {
 				if (e.isPopupTrigger()) {
 					loseAllFileSelects();
 					showActionMenu(e.getComponent(), e.getX(), e.getY());
@@ -87,7 +99,15 @@ class JFFolderViewPanel extends JPanel {
 
 				@Override
 				public void mousePressed(MouseEvent e) {
+					if (os != OS.WINDOWS) handlePopup(e);
+				}
+					
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					if (os == OS.WINDOWS) handlePopup(e);
+				}
 
+				public void handlePopup(MouseEvent e) {
 					if (fileView.selected) {
 						// double clicked, maybe add time logic so that double click is quick
 						if (e.isPopupTrigger()) {
@@ -110,9 +130,7 @@ class JFFolderViewPanel extends JPanel {
 					if (e.isPopupTrigger()) {
 						showActionMenu(e.getComponent(), e.getX(), e.getY());
 					}
-
 				}
-
 			});
 
 			fileViews[i] = fileView;
@@ -187,13 +205,49 @@ class JFFolderViewPanel extends JPanel {
         fileExplorer.setPath(fileExplorer.currentPath); // reload page
     }
 
-    void deleteSelectedFiles() {
+    void trashSelectedFiles() {
         JFFile[] files = getSelectedFiles();
 
-        for (JFFile file : files) file.file.delete();
+        for (JFFile file : files) desktop.moveToTrash(file.file);
 
         fileExplorer.setPath(fileExplorer.currentPath); // reload page
     }
+
+	void showDeletePrompt() {
+		int fileAmount = getSelectedFiles().length;
+
+		String fileString = fileAmount > 1 ? fileAmount + " files" : "1 file";
+
+		int answer = JOptionPane.showConfirmDialog(null, fileString + " will be deleted permanently.", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+		if (answer == 0) deleteSelectedFiles();
+	}
+
+    void deleteSelectedFiles() {
+        JFFile[] files = getSelectedFiles();
+
+        for (JFFile file : files) {
+			boolean isFolder = file.file.isDirectory();
+
+			if (isFolder) deleteDir(file.file);
+			else file.file.delete();
+
+		}
+		
+        fileExplorer.setPath(fileExplorer.currentPath); // reload page
+    }
+
+	void deleteDir(File file) {
+		File[] contents = file.listFiles();
+		if (contents != null) {
+			for (File f : contents) {
+				if (! Files.isSymbolicLink(f.toPath())) {
+					deleteDir(f);
+				}
+			}
+		}
+		file.delete();
+	}
 
 	void copySelectedFiles() {
         filesToBeCut = null;
@@ -243,8 +297,6 @@ class JFFolderViewPanel extends JPanel {
 	}
 
     void launchTerminal() {
-        OS os = Utils.getOS();
-
         if (os == OS.WINDOWS) {
             try {
                 Runtime.getRuntime().exec("cmd /c start cmd.exe", null, fileExplorer.currentPath.toFile());
@@ -257,6 +309,7 @@ class JFFolderViewPanel extends JPanel {
 
             if (new File("/usr/bin/xterm").exists()) emulator = "/usr/bin/xterm";
             if (new File("/usr/bin/x-terminal-emulator").exists()) emulator = "/usr/bin/x-terminal-emulator";
+			if (new File("/usr/bin/konsole").exists()) emulator = "/usr/bin/konsole";
             if (new File("/usr/bin/gnome-terminal").exists()) emulator = "/usr/bin/gnome-terminal";
 
             try {

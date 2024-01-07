@@ -25,6 +25,7 @@ class JFActionMenu  extends JPopupMenu {
     JMenuItem copyItem = new JMenuItemFixed("Copy");
     JMenuItem pasteItem = new JMenuItemFixed("Paste");
 
+    JMenuItem trashItem = new JMenuItemFixed("Trash");
     JMenuItem deleteItem = new JMenuItemFixed("Delete");
 
     public JFActionMenu(ActionType type) {
@@ -46,6 +47,7 @@ class JFActionMenu  extends JPopupMenu {
             addSeparator();
             add(renameItem);
             addSeparator();
+            add(trashItem);
             add(deleteItem);
         }
 
@@ -53,6 +55,7 @@ class JFActionMenu  extends JPopupMenu {
             add(cutItem);
             add(copyItem);
             addSeparator();
+            add(trashItem);
             add(deleteItem);
         }
 
@@ -80,8 +83,12 @@ class JFActionMenu  extends JPopupMenu {
             folderViewPanel.pasteFiles();
         });
 
+        trashItem.addActionListener((action) -> {
+            folderViewPanel.trashSelectedFiles();
+        });
+
         deleteItem.addActionListener((action) -> {
-            folderViewPanel.deleteSelectedFiles();
+            folderViewPanel.showDeletePrompt();
         });
 
         cutItem.addActionListener((action) -> {
