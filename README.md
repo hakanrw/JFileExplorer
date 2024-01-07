@@ -13,3 +13,5 @@ Run the project with `./gradlew run` (UNIX), or `gradlew.bat run` (NT)
 - _~~Implement directory traversal~~_ (done)
 - _~~Implement file creation~~_ (done)
 - _~~Implement rename~~_ (done)
+- Implement folder copying with contents
+- Implement letter drives (e.g. C:\, D:\) for Windows
